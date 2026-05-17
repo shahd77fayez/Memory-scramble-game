@@ -77,9 +77,12 @@ The core backend logic is engineered around the asynchronous concepts
 
 ## 📂 Project Structure
 
-    
-    ├── index.html      # Game UI layout, configuration inputs, and styles
+    ├── Images          # screenshoots of demo
+        ├── Fail_try.png
+        ├── Success.png 
     ├── game.js         # Core Game loop, asynchronous timer, and matching logic
+    ├── index.css       # styling layout, inputs , cards     
+    ├── index.html      # Game UI layout, configuration inputs      
     └── README.md       # Project documentation and architectural explanation
     
 ---
