@@ -1,14 +1,11 @@
 const ALL_ICONS = ['🍎', '🍌', '🍇', '🍉', '🍓', '🍒', '🍍', '🥝', '🥑', '🌽', '🥕', '🥦', '🍄', '🥜', '🌰', '🍞', '🧀', '🍗', '🍔', '🍟'];
-
+let timerInterval;
 let hasFlippedCard = false;
 let lockBoard = false;
 let firstCard, secondCard;
 let matchedPairsCount = 0;
 let totalPairs = 0;
-
-document.getElementById('start-btn').addEventListener('click', initializeGame);
-
-function initializeGame() {
+document.getElementById('start-btn').addEventListener('click', async function() {
     const nRows = parseInt(document.getElementById('rows').value);
     const nColumns = parseInt(document.getElementById('cols').value);
     const timeout = parseInt(document.getElementById('timeout').value);
@@ -25,13 +22,45 @@ function initializeGame() {
         return;
     }
 
+    clearInterval(timerInterval);
     matchedPairsCount = 0;
     totalPairs = boardSize / 2;
     resetBoardState();
 
     generateBoard(nRows, nColumns, boardSize);
-}
 
+    try {
+        await startGameTimer(timeout);
+        
+        setTimeout(() => alert("Congratulations! You Won!"), 300);
+    } catch (error) {
+        if (error === "timeout") {
+            setTimeout(() => alert("Game Over! Time's up."), 300);
+            lockBoard = true;
+        }
+    }
+});
+function startGameTimer(seconds) {
+    return new Promise((resolve, reject) => {
+        let timeLeft = seconds;
+        const timerDisplay = document.getElementById('timer');
+        timerDisplay.innerText = `Time Left: ${timeLeft}s`;
+
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            timerDisplay.innerText = `Time Left: ${timeLeft}s`;
+
+            if (matchedPairsCount === totalPairs) {
+                clearInterval(timerInterval);
+                resolve("win"); 
+            } 
+            else if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                reject("timeout"); 
+            }
+        }, 1000);
+    });
+}
 function generateBoard(nRows, nCols, boardSize) {
     const board = document.getElementById('game-board');
     board.innerHTML = ''; 
@@ -90,11 +119,6 @@ function disableCards() {
     secondCard.removeEventListener('click', flipCard);
     
     matchedPairsCount++;
-    
-    if (matchedPairsCount === totalPairs) {
-        setTimeout(() => alert("You Won!"), 500);
-    }
-
     resetBoardState();
 }
 function unflipCards() {
