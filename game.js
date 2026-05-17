@@ -1,3 +1,5 @@
+const ALL_ICONS = ['🍎', '🍌', '🍇', '🍉', '🍓', '🍒', '🍍', '🥝', '🥑', '🌽', '🥕', '🥦', '🍄', '🥜', '🌰', '🍞', '🧀', '🍗', '🍔', '🍟'];
+
 document.getElementById('start-btn').addEventListener('click', initializeGame);
 
 function initializeGame() {
@@ -16,7 +18,30 @@ function initializeGame() {
         alert("The total board size (nRows * nColumns) must be an EVEN number!");
         return;
     }
-    
-    console.log(`Game Started! Board Size: ${boardSize} (${nRows}x${nColumns}), Timeout: ${timeout}s`);
 
+    generateBoard(nRows, nColumns, boardSize);
+}
+
+function generateBoard(nRows, nCols, boardSize) {
+    const board = document.getElementById('game-board');
+    board.innerHTML = ''; 
+    board.style.gridTemplateColumns = `repeat(${nCols}, 80px)`;
+    const pairsCount = boardSize / 2; 
+    
+    if (pairsCount > ALL_ICONS.length) {
+        alert("Board is too large! Max board size is " + (ALL_ICONS.length * 2));
+        return;
+    }
+    const selectedIcons = ALL_ICONS.slice(0, pairsCount);
+    let gameCards = [...selectedIcons, ...selectedIcons];
+
+    gameCards.sort(() => Math.random() - 0.5);
+
+    gameCards.forEach((icon, index) => {
+        const card = document.createElement('div');
+        card.classList.add('card');
+        card.dataset.icon = icon; 
+        card.textContent = icon; 
+        board.appendChild(card);
+    });
 }

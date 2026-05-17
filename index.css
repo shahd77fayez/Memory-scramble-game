@@ -24,3 +24,23 @@ body
     font-weight: bold;
     color: #d9534f;
 }
+.card {
+    width: 80px;
+    height: 80px;
+    background-color: #2c3e50;
+    color: transparent; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+    cursor: pointer;
+    border-radius: 8px;
+    user-select: none;
+    transition: transform 0.3s, background-color 0.3s;
+}
+.card.flipped {
+    background-color: #ecf0f1;
+    color: #2c3e50;
+    border: 2px solid #2c3e50;
+    transform: rotateY(180deg);
+}
