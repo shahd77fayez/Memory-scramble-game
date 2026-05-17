@@ -1,5 +1,11 @@
 const ALL_ICONS = ['🍎', '🍌', '🍇', '🍉', '🍓', '🍒', '🍍', '🥝', '🥑', '🌽', '🥕', '🥦', '🍄', '🥜', '🌰', '🍞', '🧀', '🍗', '🍔', '🍟'];
 
+let hasFlippedCard = false;
+let lockBoard = false;
+let firstCard, secondCard;
+let matchedPairsCount = 0;
+let totalPairs = 0;
+
 document.getElementById('start-btn').addEventListener('click', initializeGame);
 
 function initializeGame() {
@@ -19,6 +25,10 @@ function initializeGame() {
         return;
     }
 
+    matchedPairsCount = 0;
+    totalPairs = boardSize / 2;
+    resetBoardState();
+
     generateBoard(nRows, nColumns, boardSize);
 }
 
@@ -26,22 +36,77 @@ function generateBoard(nRows, nCols, boardSize) {
     const board = document.getElementById('game-board');
     board.innerHTML = ''; 
     board.style.gridTemplateColumns = `repeat(${nCols}, 80px)`;
+
     const pairsCount = boardSize / 2; 
     
     if (pairsCount > ALL_ICONS.length) {
         alert("Board is too large! Max board size is " + (ALL_ICONS.length * 2));
         return;
     }
+
     const selectedIcons = ALL_ICONS.slice(0, pairsCount);
-    let gameCards = [...selectedIcons, ...selectedIcons];
+    let gameCards = [...selectedIcons, ...selectedIcons]; 
 
     gameCards.sort(() => Math.random() - 0.5);
 
-    gameCards.forEach((icon, index) => {
+    gameCards.forEach((icon) => {
         const card = document.createElement('div');
         card.classList.add('card');
         card.dataset.icon = icon; 
         card.textContent = icon; 
+        
+        card.addEventListener('click', flipCard);
+        
         board.appendChild(card);
     });
+}
+
+function flipCard() {
+    if (lockBoard) return;
+    if (this === firstCard) return;
+
+    this.classList.add('flipped');
+
+    if (!hasFlippedCard) {
+        hasFlippedCard = true;
+        firstCard = this;
+        return;
+    }
+
+    secondCard = this;
+    checkForMatch();
+}
+function checkForMatch() {
+    let isMatch = firstCard.dataset.icon === secondCard.dataset.icon;
+
+    if (isMatch) {
+        disableCards();
+    } else {
+        unflipCards();
+    }
+}
+function disableCards() {
+    firstCard.removeEventListener('click', flipCard);
+    secondCard.removeEventListener('click', flipCard);
+    
+    matchedPairsCount++;
+    
+    if (matchedPairsCount === totalPairs) {
+        setTimeout(() => alert("You Won!"), 500);
+    }
+
+    resetBoardState();
+}
+function unflipCards() {
+    lockBoard = true;
+
+    setTimeout(() => {
+        firstCard.classList.remove('flipped');
+        secondCard.classList.remove('flipped');
+        resetBoardState();
+    }, 1000);
+}
+function resetBoardState() {
+    [hasFlippedCard, lockBoard] = [false, false];
+    [firstCard, secondCard] = [null, null];
 }
