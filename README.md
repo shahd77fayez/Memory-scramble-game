@@ -5,7 +5,7 @@ Software Construction Tools Memory Scramble Game Task
 
 A polished, web-based memory card game developed as part of **SE606 Software Construction** coursework (Task-4). The project demonstrates the practical application of software construction tools, configuration management, and **Asynchronous Programming / Concurrency Concepts**.
 
-🌐 **Play the Game Live Here:** [Insert your GitHub Pages Link Here]
+🌐 **Play the Game Live Here:** [https://shahd77fayez.github.io/Memory-scramble-game/]
 
 ---
 
